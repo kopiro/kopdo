@@ -22,7 +22,7 @@ The data passed as array/objects are automatically serialized in the database.
 ### Select rows
 
 ```php
-KOPDO::select('test', 'name, surname, friends, 'phone')
+KOPDO::select('test', 'name, surname, friends, 'phone');
 ```
 
 And automatically unserialized when requested
@@ -49,7 +49,7 @@ KOPDO::select_first('test', '*', 'id=1');
 ### Select a list of things
 
 ```php
-KOPDO::select_list('test', 'id')
+KOPDO::select_list('test', 'id');
 ```
 
 ### Delete rows
