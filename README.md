@@ -2,6 +2,12 @@
 
 ## PDO wrapper in PHP
 
+### Connect
+
+```php
+KOPDO::connect(DB_STRING, DB_USER, DB_PASS);
+```
+
 ### Insert a new row
 
 ```php
@@ -22,10 +28,13 @@ The data passed as array/objects are automatically serialized in the database.
 ### Select rows
 
 ```php
-KOPDO::select('test', 'name, surname, friends, 'phone');
+KOPDO::select('test', 'name, surname, friends, phone');
 ```
 
-And automatically unserialized when requested
+Data are automatically unserialized when requested.
+
+Will return an indexed array with inside an associative array with datas.
+
 
 ### Update an existing row
 
@@ -46,11 +55,15 @@ or
 KOPDO::select_first('test', '*', 'id=1');
 ```
 
+Will return an associative array with datas.
+
 ### Select a list of things
 
 ```php
 KOPDO::select_list('test', 'id');
 ```
+
+Will return an indexed array of IDs. `[1,2,3,4]`
 
 ### Delete rows
 
