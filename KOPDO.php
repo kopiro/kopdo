@@ -27,7 +27,7 @@ class KOPDO {
 		return (is_array($data) || is_object($data));
 	}
 
-	private static function map_for_pdo(&$data, $prefix=':') {
+	private static function prepare_data(&$data, $prefix=':') {
 		foreach ($data as $key => $value) {
 			if (static::shouldbe_serialized($value)) {
 				$value = static::serialize_data($value);
@@ -37,7 +37,7 @@ class KOPDO {
 		return $pdata;
 	}
 
-	public static function select($table, $fields, $where='1', $data=[]) {
+	public static function all($table, $fields, $where='1', $data=[]) {
 		$query = 'SELECT '.$fields.' FROM '.$table.' WHERE '.$where;
 		$st = static::$pdo->prepare($query);
 		$st->execute($data);
@@ -53,7 +53,7 @@ class KOPDO {
 		return $res;
 	}
 
-	public static function select_first($table, $fields, $where='1', $data=[]) {
+	public static function first($table, $fields, $where='1', $data=[]) {
 		$query = 'SELECT '.$fields.' FROM '.$table.' WHERE '.$where.' LIMIT 1';
 		$st = static::$pdo->prepare($query);
 		$st->execute($data);
@@ -67,7 +67,7 @@ class KOPDO {
 		return $res;
 	}
 
-	public static function select_list($table, $field, $where='1', $data=[]) {
+	public static function indexed($table, $field, $where='1', $data=[]) {
 		$query = 'SELECT '.$field.' FROM '.$table.' WHERE '.$where;
 		$st = static::$pdo->prepare($query);
 		$st->execute($data);
@@ -84,7 +84,7 @@ class KOPDO {
 	}
 
 	public static function insert($table, $data) {
-		$pdo_data = static::map_for_pdo($data);
+		$pdo_data = static::prepare_data($data);
 		$query = 'INSERT INTO '.$table.' ('.implode(',', array_keys($data)).') ';
 		$query .= 'VALUES ('.implode(',', array_keys($pdo_data)).')';
 		$st = static::$pdo->prepare($query);
@@ -93,8 +93,10 @@ class KOPDO {
 	}
 
 	public static function update($table, $update_data, $where='0', $where_data=[]) {
-		$pdo_update_data = static::map_for_pdo($update_data, ':UP');
-		$uparray = array_map(function($x){ return $x.'=:UP'.$x; }, array_keys($update_data));
+		$pdo_update_data = static::prepare_data($update_data, ':__');
+		$uparray = array_map(function($x){
+			return $x.'=:__'.$x;
+		}, array_keys($update_data));
 		$query = 'UPDATE '.$table.' SET '.implode(',', $uparray).' ';
 		$query .= 'WHERE '.$where;
 		$st = static::$pdo->prepare($query);

@@ -28,7 +28,7 @@ The data passed as array/objects are automatically serialized in the database.
 ### Select rows
 
 ```php
-KOPDO::select('test', 'name, surname, friends, phone');
+KOPDO::all('test', 'name, surname, friends, phone');
 ```
 
 Data are automatically unserialized when requested.
@@ -45,14 +45,14 @@ KOPDO::update('test', ['name'=> 'Flavioooo'], 'id=:id', [ ':id'=>$id ]);
 ### Select a single row
 
 ```php
-KOPDO::select_first('test', '*', 'id=:id', [':id'=>$id]);
-KOPDO::select_first('test', '*', "name LIKE '%:name%'", [':name'=>'flavio']);
+KOPDO::first('test', '*', 'id=:id', [':id'=>$id]);
+KOPDO::first('test', '*', "name LIKE '%:name%'", [':name'=>'flavio']);
 ```
 
-or 
+or
 
 ```php
-KOPDO::select_first('test', '*', 'id=1');
+KOPDO::first('test', '*', 'id=1');
 ```
 
 Will return an associative array with datas.
@@ -60,7 +60,7 @@ Will return an associative array with datas.
 ### Select a list of things
 
 ```php
-KOPDO::select_list('test', 'id');
+KOPDO::indexed('test', 'id');
 ```
 
 Will return an indexed array of IDs. `[1,2,3,4]`
