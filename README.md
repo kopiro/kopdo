@@ -46,7 +46,7 @@ KOPDO::update('test', ['name'=> 'Flavioooo'], 'id=:id', [ ':id'=>$id ]);
 
 ```php
 KOPDO::select_first('test', '*', 'id=:id', [':id'=>$id]);
-KOPDO::select_first('test', "name LIKE '%:name%'", [':name'=>'flavio']);
+KOPDO::select_first('test', '*', "name LIKE '%:name%'", [':name'=>'flavio']);
 ```
 
 or 
