@@ -1,7 +1,3 @@
-# KOPDO
-
-## PDO wrapper in PHP
-
 ### Connect
 
 ```php
