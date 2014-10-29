@@ -13,8 +13,13 @@ class KOPDO {
 	}
 
 	public static function unserialize($value) {
-		$uns = json_decode($value);
-		if (is_array($uns) || is_object($uns))  return $uns;
+		$substr = substr($value, 0, 1);
+		if ($substr === '{' || $substr === '[') {
+			$uns = json_decode($value);
+			if (is_array($uns) || is_object($uns))  {
+				return $uns;
+			}
+		}
 		return $value;
 	}
 
