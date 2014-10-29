@@ -6,7 +6,6 @@ class KOPDO {
 
 	public static function connect($conn, $usr='root', $pwd='', $opt=[]) {
 		static::$pdo = new PDO($conn, $usr, $pwd, array_merge([
-			PDO::ATTR_ERRMODE 				=> PDO::ERRMODE_EXCEPTION,
 			PDO::MYSQL_ATTR_INIT_COMMAND 	=> 'SET CHARSET UTF-8',
 			PDO::ATTR_DEFAULT_FETCH_MODE 	=> PDO::FETCH_OBJ
 		], $opt));
