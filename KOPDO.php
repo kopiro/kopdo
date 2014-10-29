@@ -23,9 +23,11 @@ class KOPDO {
 		return $value;
 	}
 
-	private static function prepare_data($data, $prefix=':') {
+	private static function prepare_data($data, $prefix = ':') {
 		foreach ($data as $key => $value) {
-			if (is_array($value) || is_object($value)) $value = json_encode($value);
+			if (is_array($value) || is_object($value)) {
+				$value = json_encode($value);
+			}
 			$pdata[ $prefix . $key ] = $value;
 		}
 		return $pdata;
