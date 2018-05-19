@@ -62,7 +62,7 @@ class KOPDO {
 	}
 
 	public static function val($table, $field, $where='1', $data=[]) {
-		$query = 'SELECT ' . $field . ' FROM ' . $table ' WHERE ' . $where ' LIMIT 1';
+		$query = 'SELECT ' . $field . ' FROM ' . $table . ' WHERE ' . $where . ' LIMIT 1';
 
 		$st = static::$pdo->prepare($query);
 		$st->execute($data);
@@ -76,7 +76,7 @@ class KOPDO {
 	}
 
 	public static function first($table, $fields, $where = '1', $data = []) {
-		$query = 'SELECT ' . $field . ' FROM ' . $table ' WHERE ' . $where ' LIMIT 1';
+		$query = 'SELECT ' . $field . ' FROM ' . $table . ' WHERE ' . $where . ' LIMIT 1';
 
 		$st = static::$pdo->prepare($query);
 		$st->execute($data);
@@ -94,7 +94,7 @@ class KOPDO {
 	}
 
 	public static function indexed($table, $field, $where = '1', $data = []) {
-		$query = 'SELECT ' . $field . ' FROM ' . $table ' WHERE ' . $where;
+		$query = 'SELECT ' . $field . ' FROM ' . $table . ' WHERE ' . $where;
 
 		$st = static::$pdo->prepare($query);
 		$st->execute($data);
