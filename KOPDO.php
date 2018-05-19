@@ -5,10 +5,9 @@ class KOPDO {
 	public static $pdo;
 
 	public static function connect($conn, $usr='root', $pwd='', $opt=[]) {
-		static::$pdo = new PDO($conn, $usr, $pwd, array_merge([
-			PDO::MYSQL_ATTR_INIT_COMMAND 	=> 'SET CHARSET UTF-8',
-			PDO::ATTR_DEFAULT_FETCH_MODE 	=> PDO::FETCH_OBJ
-		], $opt));
+		static::$pdo = new PDO($conn, $usr, $pwd);
+		static::$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+		static::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	}
 
 	public static function unserialize($value) {
@@ -20,6 +19,10 @@ class KOPDO {
 			}
 		}
 		return $value;
+	}
+
+	public static function serialize($value) {
+		return json_encode($value);
 	}
 
 	private static function prepare_data($data, $prefix = ':') {
@@ -54,7 +57,7 @@ class KOPDO {
 
 		foreach ($res as $i => $row) {
 			foreach ($row as $k => $v) {
-				$res[$i][$k] = static::unserialize($v);
+				$res[$i]->$k = static::unserialize($v);
 			}
 		}
 
