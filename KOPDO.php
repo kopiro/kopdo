@@ -1,50 +1,58 @@
 <?php
 
-class KOPDO {
+class KOPDO
+{
 
 	public static $pdo;
 
-	public static function connect($conn, $usr='root', $pwd='', $opt=[]) {
+	public static function connect($conn, $usr = 'root', $pwd = '', $opt = [])
+	{
 		static::$pdo = new PDO($conn, $usr, $pwd);
 		static::$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
 		static::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	}
 
-	public static function unserialize($value) {
+	public static function unserialize($value)
+	{
 		$substr = substr($value, 0, 1);
 		if ($substr === '{' || $substr === '[') {
 			$uns = json_decode($value);
-			if (is_array($uns) || is_object($uns))  {
+			if (is_array($uns) || is_object($uns)) {
 				return $uns;
 			}
 		}
 		return $value;
 	}
 
-	public static function serialize($value) {
+	public static function serialize($value)
+	{
 		return json_encode($value);
 	}
 
-	private static function prepare_data($data, $prefix = ':') {
+	private static function prepare_data($data, $prefix = ':')
+	{
 		foreach ($data as $key => $value) {
 			if (is_array($value) || is_object($value)) {
 				$value = json_encode($value);
 			}
-			$pdata[ $prefix . $key ] = $value;
+			$pdata[$prefix . $key] = $value;
 		}
 		return $pdata;
 	}
 
-	public static function exec($str) {
+	public static function exec($str)
+	{
 		return static::$pdo->exec($str);
 	}
 
-	public static function query($query, $data=[]) {
+	public static function query($query, $data = [])
+	{
 		$st = static::$pdo->prepare($query);
 		return $st->execute($data);
 	}
 
-	public static function all($table, $fields, $where = '1', $data = []) {
+	public static function all($table, $fields, $where = '1', $data = [])
+	{
 		$query = 'SELECT ' . $fields . ' FROM ' . $table . ' WHERE ' . $where;
 
 		$st = static::$pdo->prepare($query);
@@ -64,7 +72,8 @@ class KOPDO {
 		return $res;
 	}
 
-	public static function val($table, $field, $where='1', $data=[]) {
+	public static function val($table, $field, $where = '1', $data = [])
+	{
 		$query = 'SELECT ' . $field . ' FROM ' . $table . ' WHERE ' . $where . ' LIMIT 1';
 
 		$st = static::$pdo->prepare($query);
@@ -78,7 +87,8 @@ class KOPDO {
 		return static::serialize($res[0]);
 	}
 
-	public static function first($table, $field, $where = '1', $data = []) {
+	public static function first($table, $field, $where = '1', $data = [])
+	{
 		$query = 'SELECT ' . $field . ' FROM ' . $table . ' WHERE ' . $where . ' LIMIT 1';
 
 		$st = static::$pdo->prepare($query);
@@ -96,7 +106,8 @@ class KOPDO {
 		return $res;
 	}
 
-	public static function indexed($table, $field, $where = '1', $data = []) {
+	public static function indexed($table, $field, $where = '1', $data = [])
+	{
 		$query = 'SELECT ' . $field . ' FROM ' . $table . ' WHERE ' . $where;
 
 		$st = static::$pdo->prepare($query);
@@ -117,7 +128,8 @@ class KOPDO {
 		return $list;
 	}
 
-	public static function insert($table, $data) {
+	public static function insert($table, $data)
+	{
 		$pdo_data = static::prepare_data($data);
 		$query = 'INSERT INTO ' . $table . '(' . implode(',', array_keys($data)) . ') VALUES (' . implode(',', array_keys($pdo_data)) . ')';
 
@@ -127,9 +139,10 @@ class KOPDO {
 		return static::$pdo->lastInsertId();
 	}
 
-	public static function update($table, $update_data, $where = '0', $where_data = []) {
+	public static function update($table, $update_data, $where = '0', $where_data = [])
+	{
 		$pdo_update_data = static::prepare_data($update_data, ':__');
-		$uparray = array_map(function($x){
+		$uparray = array_map(function ($x) {
 			return $x . ' = :__' . $x;
 		}, array_keys($update_data));
 
@@ -139,15 +152,16 @@ class KOPDO {
 		return $st->execute(array_merge($pdo_update_data, $where_data));
 	}
 
-	public static function delete($table, $where = '0', $data = []) {
+	public static function delete($table, $where = '0', $data = [])
+	{
 		$query = 'DELETE FROM ' . $table . ' WHERE ' . $where;
 		$st = static::$pdo->prepare($query);
 
 		return $st->execute($data);
 	}
 
-	public static function truncate($table) {
+	public static function truncate($table)
+	{
 		return static::exec('TRUNCATE TABLE ' . $table);
 	}
-
 }
