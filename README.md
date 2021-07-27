@@ -2,74 +2,132 @@
 
 ```php
 <?php
-KOPDO::connect(DB_STRING, DB_USER, DB_PASS);
+KOPDO::connect('localhost', 'root', 'toor');
 ```
 
 ### Insert a new row
 
 ```php
 <?php
-$id = KOPDO::insert('test', [
-	'name'=> 'Flavio',
-	'surname'=> 'Kopiro',
-	'friends'=> ['A','B','C'],
-	'phones'=> [
-		'ita'=> '+391231231234',
-		'usa'=> '+02998898',
-		'uk'=> ['09956','923752']
+/* SQL:
+INSERT INTO database (name, surname, friends, phones)
+VALUES ('Flavio', 'Kopiro', serialize(['A', 'B', 'C']), serialize([ 'ita' => '+123', 'uk' => ['456', '789'] ]))
+*/
+$id = KOPDO::insert('database', [
+	'name' => 'Flavio',
+	'surname' => 'Kopiro',
+	'friends' => ['A', 'B', 'C'],
+	'phones' => [
+		'ita' => '+123',
+		'uk' => ['456', '789']
 	]
 ]);
 ```
 
-The data passed as array/objects are automatically serialized in the database.
+The attributes passed as array or objects are automatically serialized
+into the database using php built-in `serialize` function.
+
+It will return the ID (primary key) of the just inserted row.
 
 ### Select rows
 
 ```php
 <?php
-KOPDO::all('test', 'name, surname, friends, phone');
+// SQL: SELECT name, surname, friends, phone FROM database
+KOPDO::all('database', 'name, surname, friends, phone');
 ```
 
-Data are automatically unserialized when requested.
+Data are automatically unserialized upon request.
 
-Will return an indexed array with inside an associative array with datas.
+The `::all` method returns an indexed array that contains PHP stdClass objects:
+
+```php
+[
+	(stdClass)[
+		'name' => 'Flavio',
+		'surname' => 'Kopiro',
+		'friends' => ['A', 'B', 'C'],
+		'phones' => [
+			'ita' => '+123',
+			'uk' => ['456', '789']
+		]
+	],
+	(stdClass)[ ... ],
+	(stdClass)[ ... ],
+	...
+]
+```
 
 ### Update an existing row
 
 ```php
 <?php
-KOPDO::update('test', ['name'=> 'Flavioooo'], 'id=:id', [ ':id'=>$id ]);
+// SQL: UPDATE database SET name = 'Flavioooo' WHERE id = 1
+$id = 1;
+KOPDO::update('database', [ 'name' => 'Flavioooo' ], 'id = :id', [ ':id' => $id ]);
 ```
+
+It will return `true`/`false` if the row got updated.
 
 ### Select a single row
 
 ```php
 <?php
-KOPDO::first('test', '*', 'id=:id', [':id'=>$id]);
-KOPDO::first('test', '*', "name LIKE '%:name%'", [':name'=>'flavio']);
+$id = 1;
+// SQL: SELECT * FROM database WHERE id = 1
+KOPDO::first('database', '*', 'id = :id', [ ':id' => $id ]);
+// SQL: SELECT surname FROM database WHERE name LIKE '%Flavio%'
+KOPDO::first('database', 'surname', "name LIKE '%:name%'", [ ':name' => 'Flavio' ]);
 ```
 
-or
+The `::first` method returns a PHP stdClass object containing the first row returned from the query.
+
+It will return:
+
+```php
+(stdClass)[
+	'name' => 'Flavio',
+	'surname' => 'Kopiro',
+	'friends' => ['A', 'B', 'C'],
+	'phones' => [
+		'ita' => '+123',
+		'uk' => ['456', '789']
+	]
+]
+```
+
+##### Plain query
+
+Not recommended, but if you have constant values you can query directly without passing the named attributes.
 
 ```php
 <?php
-KOPDO::first('test', '*', 'id=1');
+// SQL: SEECT * FROM database WHERE id = 1
+KOPDO::first('database', '*', 'id=1');
 ```
-
-Will return an associative array with datas.
 
 ### Select a list of things
 
 ```php
 <?php
-KOPDO::indexed('test', 'id');
+// SQL: SELECT id FROM database
+KOPDO::indexed('database', 'id');
 ```
 
-Will return an indexed array of IDs. `[1,2,3,4]`
+It will return an indexed array of IDs like: `[ 1, 2, 3, 4 ]`
 
 ### Delete rows
 
 ```php
 <?php
-KOPDO::delete('test', "name LIKE '%:name%'", [':name'=>'flavio']);
+// SQL: DELETE FROM database WHERE name LIKE '%flavio%'
+KOPDO::delete('database', "name LIKE '%:name%'", [ ':name' => 'flavio' ]);
+```
+
+### Truncate table
+
+```php
+<?php
+// SQL: TRUNCATE TABLE database
+KOPDO::truncate('database');
 ```
