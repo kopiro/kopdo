@@ -100,7 +100,7 @@ class KOPDO
 		}
 
 		foreach ($res as $k => $v) {
-			$res[$k] = static::serialize($v);
+			$res->$k = static::serialize($v);
 		}
 
 		return $res;
