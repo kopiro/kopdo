@@ -12,7 +12,7 @@ KOPDO::connect(DB_STRING, DB_USER, DB_PASS);
 $id = KOPDO::insert('test', [
 	'name'=> 'Flavio',
 	'surname'=> 'Kopiro',
-	'friends'=> ['A','B','C']
+	'friends'=> ['A','B','C'],
 	'phones'=> [
 		'ita'=> '+391231231234',
 		'usa'=> '+02998898',
@@ -33,7 +33,6 @@ KOPDO::all('test', 'name, surname, friends, phone');
 Data are automatically unserialized when requested.
 
 Will return an indexed array with inside an associative array with datas.
-
 
 ### Update an existing row
 
@@ -74,5 +73,3 @@ Will return an indexed array of IDs. `[1,2,3,4]`
 <?php
 KOPDO::delete('test', "name LIKE '%:name%'", [':name'=>'flavio']);
 ```
-
-
