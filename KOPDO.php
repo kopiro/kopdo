@@ -78,7 +78,7 @@ class KOPDO {
 		return static::serialize($res[0]);
 	}
 
-	public static function first($table, $fields, $where = '1', $data = []) {
+	public static function first($table, $field, $where = '1', $data = []) {
 		$query = 'SELECT ' . $field . ' FROM ' . $table . ' WHERE ' . $where . ' LIMIT 1';
 
 		$st = static::$pdo->prepare($query);
